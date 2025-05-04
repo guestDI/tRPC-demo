@@ -80,6 +80,23 @@ const appRouter = router({
             users.push(newUser);
             return newUser;
         }),
+
+    // Mutation procedure - delete a user
+    deleteUser: publicProcedure
+        .input(z.string())
+        .mutation(({ input }) => {
+            const userIndex = users.findIndex(u => u.id === input);
+            if (userIndex === -1) {
+                throw new TRPCError({
+                    code: 'NOT_FOUND',
+                    message: `User with id ${input} not found`,
+                });
+            }
+
+            const deletedUser = users[userIndex];
+            users.splice(userIndex, 1);
+            return deletedUser;
+        }),
 });
 
 // Export type definition of API
